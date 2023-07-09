@@ -31,6 +31,10 @@ inputs:
     id: set_meta
     optional: true
 
+inputs:
+-   domain: message
+    id: set_meta
+    optional: true
 outputs:
 -   domain: stream
     dtype: byte
@@ -40,5 +44,8 @@ asserts:
 templates:
     imports: import nrsc5
     make: nrsc5.psd_encoder(${prog_num}, ${title}, ${artist}, ${bytes_per_frame})
+
+documentation: |-
+    Accepts messages starting with 'title' or 'artist' to set the respective fields.
 
 file_format: 1

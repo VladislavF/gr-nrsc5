@@ -12,6 +12,7 @@
 #include "hdlc.h"
 #include "psd_encoder_impl.h"
 #include <gnuradio/io_signature.h>
+#include <boost/spirit/include/qi.hpp>
 #include <sstream>
 
 namespace gr {
@@ -45,7 +46,6 @@ psd_encoder_impl::psd_encoder_impl(const int prog_num,
     lot = -1;
     seq_num = 0;
     packet_off = 0;
-
     set_max_output_buffer(0, 4096);
 
     if (this->bytes_per_frame > 0) {
@@ -67,6 +67,35 @@ psd_encoder_impl::psd_encoder_impl(const int prog_num,
  * Our virtual destructor.
  */
 psd_encoder_impl::~psd_encoder_impl() {}
+
+void psd_encoder_impl::set_meta(const pmt::pmt_t& msg)
+{
+    using boost::spirit::qi::phrase_parse;
+	using boost::spirit::qi::lexeme;
+	using boost::spirit::qi::char_;
+    using boost::spirit::qi::space;
+	using boost::spirit::qi::blank;
+    using boost::spirit::qi::lit;
+
+    int msg_len = pmt::blob_length(pmt::cdr(msg));
+	std::string in = std::string((char*)pmt::blob_data(pmt::cdr(msg)), msg_len);
+	std::cout << "input string: " << in << "   length: " << in.size() << std::endl;
+
+    std::string s1;
+
+    //set the title
+    if(phrase_parse(in.begin(), in.end(), "title" >> lexeme[+(char_ - '\n')] >> -lit("\n"),space, s1)) {
+		std::cout << "Title: " << s1 << std::endl;
+        title = s1;
+    }
+    //set the artist
+    if(phrase_parse(in.begin(), in.end(), "artist" >> lexeme[+(char_ - '\n')] >> -lit("\n"),space, s1)) {
+		std::cout << "Artist: " << s1 << std::endl;
+        artist = s1;
+    }
+    std::cout << "Global Title: " << this->title << std::endl;
+    std::cout << "Global Artist: " << this->artist << std::endl;
+}
 
 int psd_encoder_impl::work(int noutput_items,
                            gr_vector_const_void_star& input_items,
