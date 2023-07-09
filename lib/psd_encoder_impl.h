@@ -60,6 +60,8 @@ private:
     std::string encode_ppp(std::string packet);
     int compute_fcs(std::string& packet);
 
+    void set_meta(const pmt::pmt_t& msg);
+
 public:
     psd_encoder_impl(const int prog_num,
                      const std::string& title,
