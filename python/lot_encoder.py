@@ -30,6 +30,8 @@ class lot_encoder(gr.basic_block):
             out_sig=[]
         )
         self.message_port_register_out(pmt.intern("aas"))
+        self.message_port_register_in(pmt.intern("file"))
+        self.set_msg_handler(pmt.intern("file"), self.handle_new_file)
 
         self.message_port_register_in(pmt.intern("file"))
         self.set_msg_handler(pmt.intern("file"), self.handle_new_file)
@@ -49,7 +51,6 @@ class lot_encoder(gr.basic_block):
         self.filesize = 0
         #file bytes input via pdu
         self.receivedFile = bytearray()
-
     def handle_new_file(self, msg):
         data = pmt.to_python(msg)
         if not (isinstance(data, tuple) and len(data) == 2):

@@ -46,7 +46,10 @@ psd_encoder_impl::psd_encoder_impl(const int prog_num,
     lot = -1;
     seq_num = 0;
     packet_off = 0;
+
     set_max_output_buffer(0, 4096);
+    current_mime = mime_hash::PRIMARY_IMAGE;
+    current_lot= -1;
 
     if (this->bytes_per_frame > 0) {
         bytes_allowed = 2 * this->bytes_per_frame;
@@ -95,6 +98,19 @@ void psd_encoder_impl::set_meta(const pmt::pmt_t& msg)
     }
     std::cout << "Global Title: " << this->title << std::endl;
     std::cout << "Global Artist: " << this->artist << std::endl;
+
+    //set XHDR album art
+    if(phrase_parse(in.begin(), in.end(), "album" >> lexeme[+(char_ - '\n')] >> -lit("\n"),space, s1)) {
+		std::cout << "New Album Art LOT: " << s1 << std::endl;
+        current_lot = std::stoi(s1);
+        current_mime = mime_hash::PRIMARY_IMAGE;
+    }
+    //set XHDR station logo art
+    if(phrase_parse(in.begin(), in.end(), "logo" >> lexeme[+(char_ - '\n')] >> -lit("\n"),space, s1)) {
+		std::cout << "Resetting display to logo" << s1 << std::endl;
+        current_lot = -1;
+        current_mime = mime_hash::STATION_LOGO;
+    }
 }
 
 int psd_encoder_impl::work(int noutput_items,
