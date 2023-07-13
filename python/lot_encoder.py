@@ -51,6 +51,7 @@ class lot_encoder(gr.basic_block):
         self.filesize = 0
         #file bytes input via pdu
         self.receivedFile = bytearray()
+    
     def handle_new_file(self, msg):
         data = pmt.to_python(msg)
         if not (isinstance(data, tuple) and len(data) == 2):
