@@ -111,6 +111,7 @@ void psd_encoder_impl::set_meta(const pmt::pmt_t& msg)
         current_lot = -1;
         current_mime = mime_hash::STATION_LOGO;
     }
+    std::cout << "Global lot: " << this->current_lot << std::endl;
 }
 
 int psd_encoder_impl::work(int noutput_items,

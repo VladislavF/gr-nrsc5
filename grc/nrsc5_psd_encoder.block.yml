@@ -30,11 +30,6 @@ inputs:
 -   domain: message
     id: set_meta
     optional: true
-
-inputs:
--   domain: message
-    id: set_meta
-    optional: true
 outputs:
 -   domain: stream
     dtype: byte
