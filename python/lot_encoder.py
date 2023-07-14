@@ -59,7 +59,11 @@ class lot_encoder(gr.basic_block):
             return
         #only attempt to parse text if we are waiting for a new file
         if self.inputIdle:
-            text = bytes(data[1]).decode()
+            try:
+                text = bytes(data[1]).decode()
+            except:
+                print("LOT Invalid Packet received")
+                return
             startmessage = "newfile"
             if text.startswith(startmessage):
                 fields = text[len(startmessage):].split('|')
