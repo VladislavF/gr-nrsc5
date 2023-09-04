@@ -93,7 +93,7 @@ l2_encoder_impl::l2_encoder_impl(const int num_progs,
         set_min_output_buffer(0, 16);
         target_nop = 4;
         lc_bits = 12;
-        psd_bytes = 8;
+        psd_bytes = 2;
         pdu_seq_len = 8;
         codec_mode = 13;
         break;
